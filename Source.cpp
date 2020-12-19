@@ -1,62 +1,111 @@
-/*
-	Hello Triangle, OpenGL 2 level
-	No shaders
-*/
+
 
 #include "glut.h"
 #include <iostream>
 #include <gl/GL.h>
+
+GLfloat rotate_x=0;
+GLfloat rotate_y=0;
+
 void init() {
 	// Set initial OpenGL states
+}
+void drawCube() {
+	glBegin(GL_POLYGON);
+
+	glColor3f(1.0, 0.0, 0.0);     
+	glVertex3f(0.5, -0.5, -0.5);      // P1 is red
+
+	glColor3f(0.0, 1.0, 0.0);     
+	glVertex3f(0.5, 0.5, -0.5);      // P2 is green
+
+	glColor3f(0.0, 0.0, 1.0);     
+	glVertex3f(-0.5, 0.5, -0.5);      // P3 is blue
+
+	glColor3f(1.0, 0.0, 1.0);     
+	glVertex3f(-0.5, -0.5, -0.5);      // P4 is purple
+
+	glEnd();
+
+	// White side - BACK
+	glBegin(GL_POLYGON);
+	glColor3f(1.0, 1.0, 1.0);
+	glVertex3f(0.5, -0.5, 0.5);
+	glVertex3f(0.5, 0.5, 0.5);
+	glVertex3f(-0.5, 0.5, 0.5);
+	glVertex3f(-0.5, -0.5, 0.5);
+	glEnd();
+
+	// Purple side - RIGHT
+	glBegin(GL_POLYGON);
+	glColor3f(1.0, 0.0, 1.0);
+	glVertex3f(0.5, -0.5, -0.5);
+	glVertex3f(0.5, 0.5, -0.5);
+	glVertex3f(0.5, 0.5, 0.5);
+	glVertex3f(0.5, -0.5, 0.5);
+	glEnd();
+
+	// Green side - LEFT
+	glBegin(GL_POLYGON);
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(-0.5, -0.5, 0.5);
+	glVertex3f(-0.5, 0.5, 0.5);
+	glVertex3f(-0.5, 0.5, -0.5);
+	glVertex3f(-0.5, -0.5, -0.5);
+	glEnd();
+
+	// Blue side - TOP
+	glBegin(GL_POLYGON);
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex3f(0.5, 0.5, 0.5);
+	glVertex3f(0.5, 0.5, -0.5);
+	glVertex3f(-0.5, 0.5, -0.5);
+	glVertex3f(-0.5, 0.5, 0.5);
+	glEnd();
+
+	// Red side - BOTTOM
+	glBegin(GL_POLYGON);
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(0.5, -0.5, -0.5);
+	glVertex3f(0.5, -0.5, 0.5);
+	glVertex3f(-0.5, -0.5, 0.5);
+	glVertex3f(-0.5, -0.5, -0.5);
+	glEnd();
+
+
+	//draw and swap buffers
+	glFlush();
+	glutSwapBuffers();
 
 }
-// set up vertex data 
-float vertices[] = {
-	0.0f, 0.0f, 0.0f, //origin
-	1.0f, 0.0f, 0.0f, // XaxisRight vertex
-	 0.0f, 1.0f, 0.0f, // YaxisPositive vertex
-	 -1.0f,  -1.0f, 0.0f  // bottomLeft vertex
-};
-float colors[] = {
-  1.0f, 0.5f, 0.2f,
-  1.0f, 0.5f, 0.2f,
-  1.0f, 0.5f, 0.2f
-};
 // display function
 void display() {
 	// Clear the window
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-	// Draw the triangle
-	glShadeModel(GL_FLAT);
-	glEnableClientState(GL_VERTEX_ARRAY);
-	glEnableClientState(GL_COLOR_ARRAY);
-	//glVertexPointer(3, GL_FLOAT, 0, vertices);
-	//glColorPointer(3, GL_FLOAT, 0, colors);
-
-	glBegin(GL_LINES); //line 0,0 to 1,0
-	glColor3ub(255, 0, 0); //red
-	glVertex2f(0.0, 0.0);
-	glVertex2f(1.0, 0.0);
-	glEnd();
-
-	glBegin(GL_LINES); //line 0,0 to 1,0
-	glColor3ub(0, 255, 0); //blue
-	glVertex2f(0.0, 0.0);
-	glVertex2f(0.0, 1.0);
-	glEnd();
-
-	glBegin(GL_LINES); //line 0,0 to 1,0
-	glColor3ub(255, 255, 0); //yellow
-	glVertex2f(0.0, 0.0);
-	glVertex2f(-1.0, -1.0);
-	glEnd();
 
 
-	//glDrawArrays(GL_LINES, 0, 4); // solid triangle
+	//glShadeModel(GL_FLAT);
+	//glEnableClientState(GL_VERTEX_ARRAY);
+	//glEnableClientState(GL_COLOR_ARRAY);
 
-	  // Swap buffers for animation
-	glutSwapBuffers();
+
+
+	
+	drawCube();
+
+	/*glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(100, 1.0, 0.5, 100.01); // aperture, aspect, near, far
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	*/
+	
+	
+	glRotatef(rotate_x, 1.0, 0.0, 0.0);
+	glRotatef(rotate_y, 0.0, 1.0, 0.0);
+
+	rotate_x = 0;
+	rotate_y = 0;
 }
 /*
 Function invoked when an event on a regular keys occur.
@@ -64,10 +113,23 @@ Function invoked when an event on a regular keys occur.
 void keyboard(unsigned char k, int x, int y)
 {
 	// Close application if ESC is pressed 
+
 	if (k == 27)
 	{
 		exit(0);
 	}
+
+	printf("\nchar: %u, x: %d, y: %d\n", k, x, y);
+	if (k == 119) {
+		printf("w was pressed");
+		rotate_x += 0.5;
+		
+	}
+	else if (k == 115) {
+		rotate_y += 0.5;
+		
+	}
+	glutPostRedisplay();
 }
 /*
 Mouse Handler
@@ -88,6 +150,7 @@ void resize(int width, int height) {
 		min = height;
 	}
 	glViewport(0, 0, min, min); //keeps viewport a square
+	glutPostRedisplay();
 }
 
 /*
@@ -100,14 +163,22 @@ int main(int argc, char** argv)
 	glViewport(0, 0, 300, 300);
 
 	glutInitWindowSize(600, 800);
-	//glutInitWindowPosition(300, 300);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("project3");
+	glEnable(GL_DEPTH_TEST);
+
+
+
 
 	glutDisplayFunc(display);
 	glutMouseFunc(mouseClick);
 	glutReshapeFunc(resize);
 	glutMotionFunc(mouseMotion);
+	glutKeyboardFunc(keyboard);
+
+	glRotatef(360, 1.0, 0.0, 0.0);
+	glRotatef(360, 0.0, 1.0, 0.0);
+
 
 	glutMainLoop();
 	return 0;
