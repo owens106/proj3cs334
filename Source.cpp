@@ -21,7 +21,10 @@ double zpos = 0.0;
 #define Sin(th) sin(PI/180*(th))
 double zoomfactor = 1.0;
 
+double lmb[4] = { 0, 0, 0, 0 };
+
 BOOLEAN Lclick = false;
+BOOLEAN ShiftLclick = false;
 
 
 
@@ -275,18 +278,36 @@ void mouseClick(int button, int mode, int x, int y) {
 	//mode = 0 for down 1 for up
 	// event happens once on pushing the button and once more when releasing it
 	// button identifies what you clicked, mode if its down or up
+	double windowHeight = glutGet(GLUT_SCREEN_HEIGHT);
+	double windowWidth = glutGet(GLUT_SCREEN_WIDTH);
+
 	printf("button: %d  mode: %d\n",button,mode);
 	if (button == 0 && mode == 0) {//Lclick pushed down
 		Lclick = true;
+		lmb[0] = x;
+		lmb[1] = y;
 	}
-	else {
-		Lclick = false;
-	}
+	if(button == 0 && mode == 1 ){//Left click unclicked
+		//Lclick = false;
+		lmb[2] = x;
+		lmb[3] = y;
 
+	}
+	for (int i = 0; i < 4; i++) {
+		printf(" %f: ", lmb[i]);
+	}
+	printf("\n");
 	
 	int z = glutGetModifiers();
-	if (z == 1 && Lclick) {//shift Lclick
+	if (z == 1 && Lclick && mode == 1) {//shift Lclick released
 		printf("shift L click pressed\n");
+		//translation
+		ShiftLclick = true; 
+		double xchange = (lmb[2] - lmb[0])/windowWidth; // x change relative to window
+		double ychange = (lmb[3] - lmb[1])/windowHeight; //y change relative to window
+		xpos += xchange;
+		ypos += ychange;
+		project();
 	}
 	else if (z == 2 && Lclick) {
 		printf("ctrl L click pressed\n");
