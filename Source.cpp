@@ -6,137 +6,93 @@
 
 GLfloat rotate_x=0;
 GLfloat rotate_y=0;
+double asp = 1;
+double dim = 3.0;
+int fov = 55;
+
+#define PI 3.141592653
+#define Cos(th) cos(PI/180*(th))
+#define Sin(th) sin(PI/180*(th))
+
+
+
 
 void init() {
 	// Set initial OpenGL states
 }
+
+void project() {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	gluPerspective(fov, asp, dim/4, dim*4); // aperture, aspect, near, far
+
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+}
+
 void drawCube() {
 	glBegin(GL_POLYGON);
-	glColor3f(1.0, 0.0, 0.0);     
-	glVertex3f(0.0, -0.5, -0.5); // P1 is red
-	
-	glColor3f(0.0, 1.0, 0.0); 
-	glVertex3f(0.0, 0.5, -0.5); // P2 is green
-	
-	glColor3f(0.0, 0.0, 1.0);     
-	glVertex3f(-1.0, 0.5, -0.5);  // P3 is blue
-	
-	glColor3f(1.0, 0.0, 1.0);     
-	glVertex3f(-1.0, -0.5, -0.5);      // P4 is purple
 
-	glEnd();
-
-	// White side - BACK
-	glBegin(GL_POLYGON);
-	glColor3f(1.0, 1.0, 1.0);
-	glVertex3f(0.0, -0.5, 0.5);
-	glVertex3f(0.0, 0.5, 0.5);
-	glVertex3f(-1.0, 0.5, 0.5);
-	glVertex3f(-1.0, -0.5, 0.5);
-	glEnd();
-
-	// Purple side - RIGHT
-	glBegin(GL_POLYGON);
-	glColor3f(1.0, 0.0, 1.0);
-	glVertex3f(0.0, -0.5, -0.5);
-	glVertex3f(0.0, 0.5, -0.5);
-	glVertex3f(0.0, 0.5, 0.5);
-	glVertex3f(0.0, -0.5, 0.5);
-	glEnd();
-
-	// Green side - LEFT
-	glBegin(GL_POLYGON);
-	glColor3f(0.0, 1.0, 0.0);
-	glVertex3f(-1.0, -0.5, 0.5);
-	glVertex3f(-1.0, 0.5, 0.5);
-	glVertex3f(-1.0, 0.5, -0.5);
-	glVertex3f(-1.0, -0.5, -0.5);
-	glEnd();
-
-	// Blue side - TOP
-	glBegin(GL_POLYGON);
-	glColor3f(0.0, 0.0, 1.0);
-	glVertex3f(0.0, 0.5, 0.5);
-	glVertex3f(0.0, 0.5, -0.5);
-	glVertex3f(-1.0, 0.5, -0.5);
-	glVertex3f(-1.0, 0.5, 0.5);
-	glEnd();
-
-	// Red side - BOTTOM
-	glBegin(GL_POLYGON);
-	glColor3f(1.0, 0.0, 0.0);
-	glVertex3f(0.0, -0.5, -0.5);
-	glVertex3f(0.0, -0.5, 0.5);
-	glVertex3f(-1.0, -0.5, 0.5);
-	glVertex3f(-1.0, -0.5, -0.5);
-	glEnd();
-
-
-
-	//cube2
-	glBegin(GL_POLYGON);
-	glColor3f(1.0, 0.0, 0.0);     
-	glVertex3f(1.0, 0.0, -0.0);      // P1 is red
+	glColor3f(1.0, 0.0, 0.0);   
+	glVertex3f(0.5, -0.5, -0.5);      // P1 is red
 
 	glColor3f(0.0, 1.0, 0.0);     
-	glVertex3f(1.0, 1.0, -0.0);      // P2 is green
+	glVertex3f(0.5, 0.5, -0.5);      // P2 is green
 
-	glColor3f(0.0, 0.0, 1.0);     
-	glVertex3f(0.0, 1.0, -0.0);      // P3 is blue
+	glColor3f(0.0, 0.0, 1.0);    
+	glVertex3f(-0.5, 0.5, -0.5);      // P3 is blue
 
 	glColor3f(1.0, 0.0, 1.0);     
-	glVertex3f(0.0, 0.0, -0.0);      // P4 is purple
+	glVertex3f(-0.5, -0.5, -0.5);      // P4 is purple
 
 	glEnd();
 
 	// White side - BACK
 	glBegin(GL_POLYGON);
 	glColor3f(1.0, 1.0, 1.0);
-	glVertex3f(1.0, -0.0, 1.0);
-	glVertex3f(1.0, 1.0, 1.0);
-	glVertex3f(-0.0, 1.0, 1.0);
-	glVertex3f(-0.0, -0.0, 1.0);
+	glVertex3f(0.5, -0.5, 0.5);
+	glVertex3f(0.5, 0.5, 0.5);
+	glVertex3f(-0.5, 0.5, 0.5);
+	glVertex3f(-0.5, -0.5, 0.5);
 	glEnd();
 
 	// Purple side - RIGHT
 	glBegin(GL_POLYGON);
 	glColor3f(1.0, 0.0, 1.0);
-	glVertex3f(1.0, -0.0, -0.0);
-	glVertex3f(1.0, 1.0, -0.0);
-	glVertex3f(1.0, 1.0, 1.0);
-	glVertex3f(1.0, -0.0, 1.0);
+	glVertex3f(0.5, -0.5, -0.5);
+	glVertex3f(0.5, 0.5, -0.5);
+	glVertex3f(0.5, 0.5, 0.5);
+	glVertex3f(0.5, -0.5, 0.5);
 	glEnd();
 
 	// Green side - LEFT
 	glBegin(GL_POLYGON);
 	glColor3f(0.0, 1.0, 0.0);
-	glVertex3f(-0.0, -0.0, 1.0);
-	glVertex3f(-0.0, 1.0, 1.0);
-	glVertex3f(-0.0, 1.0, -0.0);
-	glVertex3f(-0.0, -0.0, -0.0);
+	glVertex3f(-0.5, -0.5, 0.5);
+	glVertex3f(-0.5, 0.5, 0.5);
+	glVertex3f(-0.5, 0.5, -0.5);
+	glVertex3f(-0.5, -0.5, -0.5);
 	glEnd();
 
 	// Blue side - TOP
 	glBegin(GL_POLYGON);
 	glColor3f(0.0, 0.0, 1.0);
-	glVertex3f(1.0, 1.0, 1.0);
-	glVertex3f(1.0, 1.0, -0.0);
-	glVertex3f(-0.0, 1.0, -0.0);
-	glVertex3f(-0.0, 1.0, 1.0);
+	glVertex3f(0.5, 0.5, 0.5);
+	glVertex3f(0.5, 0.5, -0.5);
+	glVertex3f(-0.5, 0.5, -0.5);
+	glVertex3f(-0.5, 0.5, 0.5);
 	glEnd();
 
 	// Red side - BOTTOM
 	glBegin(GL_POLYGON);
 	glColor3f(1.0, 0.0, 0.0);
-	glVertex3f(1.0, -0.0, -0.0);
-	glVertex3f(1.0, -0.0, 1.0);
-	glVertex3f(-0.0, -0.0, 1.0);
-	glVertex3f(-0.0, -0.0, -0.0);
+	glVertex3f(0.5, -0.5, -0.5);
+	glVertex3f(0.5, -0.5, 0.5);
+	glVertex3f(-0.5, -0.5, 0.5);
+	glVertex3f(-0.5, -0.5, -0.5);
 	glEnd();
-
-
-
-
 
 	//draw and swap buffers
 	glFlush();
@@ -154,25 +110,26 @@ void display() {
 	//glEnableClientState(GL_COLOR_ARRAY);
 
 
-
-	
-	drawCube();
-
-	/*glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-
-	gluPerspective(45, 1.0, 0.3, 100.01); // aperture, aspect, near, far
-
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	*/
 	
 	
-	glRotatef(rotate_x, 1.0, 0.0, 0.0);
-	glRotatef(rotate_y, 0.0, 1.0, 0.0);
+
+	
+
+	
+
+	double Ex = -2.0 * 3.0 * Sin(35) * Cos(0);
+	double Ey = 2.0 * 3.0 * Sin(0);
+	double Ez = 2.0 * 3.0 * Cos(0) * Cos(0);
+	gluLookAt(Ex, Ey, Ez, 0, 0, 0, 0, Cos(0), 0);
+
+	
+	//glRotatef(rotate_x, 1.0, 0.0, 0.0);
+	//glRotatef(rotate_y, 0.0, 1.0, 0.0);
 	
 	rotate_x = 0;
 	rotate_y = 0;
+	drawCube();
 }
 /*
 Function invoked when an event on a regular keys occur.
@@ -217,6 +174,8 @@ void resize(int width, int height) {
 		min = height;
 	}
 	glViewport(0, 0, min, min); //keeps viewport a square
+	asp = (height > 0) ? (double)width / height : 1;
+	project();
 	glutPostRedisplay();
 }
 
@@ -233,8 +192,6 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("project3");
 	glEnable(GL_DEPTH_TEST);
-
-
 
 
 	glutDisplayFunc(display);
