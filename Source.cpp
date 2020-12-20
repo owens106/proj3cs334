@@ -9,6 +9,8 @@ GLfloat rotate_y=0;
 double asp = 1;
 double dim = 3.0;
 int fov = 55;
+double th = 0.0;
+double ph = 0.0;
 
 #define PI 3.141592653
 #define Cos(th) cos(PI/180*(th))
@@ -31,7 +33,68 @@ void project() {
 	glLoadIdentity();
 	
 }
+void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zpos) { 
 
+	glBegin(GL_POLYGON); //front face
+
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(xcenter - size, ycenter + size, zpos - size); //top left
+
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(xcenter - size, ycenter - size, zpos - size); //bottom left
+	
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex3f(xcenter + size, ycenter - size, zpos - size); //bottom right
+
+	glColor3f(1.0, 0.0, 1.0);
+	glVertex3f(xcenter + size, ycenter + size, zpos - size); //top right
+
+	glEnd();
+
+	glBegin(GL_POLYGON);//back face
+	glColor3f(1.0, 1.0, 1.0);
+	glVertex3f(xcenter + size, ycenter + size, zpos + size); //top right
+	glVertex3f(xcenter + size, ycenter - size, zpos + size); //bottom right
+	glVertex3f(xcenter - size, ycenter - size, zpos + size); //bottom left
+	glVertex3f(xcenter - size, ycenter + size, zpos + size); //top left
+	glEnd();
+
+
+	glBegin(GL_POLYGON); //left face
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(xcenter - size, ycenter - size, zpos - size); //bottom left
+	glVertex3f(xcenter - size, ycenter + size, zpos - size); //top left
+	glVertex3f(xcenter - size, ycenter + size, zpos + size); //top left
+	glVertex3f(xcenter - size, ycenter - size, zpos + size); //bottom left
+	glEnd();
+
+	glBegin(GL_POLYGON);//right face
+	glColor3f(1.0, 0.0, 1.0);
+	glVertex3f(xcenter + size, ycenter + size, zpos - size); //top right
+	glVertex3f(xcenter + size, ycenter - size, zpos - size); //bottom right
+	glVertex3f(xcenter + size, ycenter - size, zpos + size); //bottom right
+	glVertex3f(xcenter + size, ycenter + size, zpos + size); //top right
+	glEnd();
+
+	glBegin(GL_POLYGON);//top face
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex3f(xcenter + size, ycenter + size, zpos - size); //top right
+	glVertex3f(xcenter + size, ycenter + size, zpos + size); //top right
+	glVertex3f(xcenter - size, ycenter + size, zpos + size); //top left
+	glVertex3f(xcenter - size, ycenter + size, zpos - size); //top left
+	glEnd();
+
+	glBegin(GL_POLYGON);//bottom face
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(xcenter + size, ycenter - size, zpos - size); //bottom right
+	glVertex3f(xcenter - size, ycenter - size, zpos - size); //bottom left
+	glVertex3f(xcenter - size, ycenter - size, zpos + size); //bottom left
+	glVertex3f(xcenter + size, ycenter - size, zpos + size); //bottom right
+	glEnd();
+
+	glFlush();
+	glutSwapBuffers();
+}
 void drawCube() {
 	glBegin(GL_POLYGON);
 
@@ -114,14 +177,11 @@ void display() {
 	
 	
 
-	
-
-	
-
-	double Ex = -2.0 * 3.0 * Sin(35) * Cos(0);
-	double Ey = 2.0 * 3.0 * Sin(0);
-	double Ez = 2.0 * 3.0 * Cos(0) * Cos(0);
-	gluLookAt(Ex, Ey, Ez, 0, 0, 0, 0, Cos(0), 0);
+	double Ex = -2.0 * dim * Sin(th) * Cos(ph);
+	double Ey = 2.0 * dim * Sin(ph);
+	double Ez = 2.0 * dim * Cos(th) * Cos(ph);
+	gluLookAt(Ex, Ey, Ez, 0, 0, 0, 0, Cos(ph), 0);
+	drawCubeLocation(0.0, 0.0, 0.2, 0.0);
 
 	
 	//glRotatef(rotate_x, 1.0, 0.0, 0.0);
@@ -129,7 +189,7 @@ void display() {
 	
 	rotate_x = 0;
 	rotate_y = 0;
-	drawCube();
+	//drawCube();
 }
 /*
 Function invoked when an event on a regular keys occur.
@@ -146,11 +206,11 @@ void keyboard(unsigned char k, int x, int y)
 	printf("\nchar: %u, x: %d, y: %d\n", k, x, y);
 	if (k == 119) {
 		printf("w was pressed");
-		rotate_x += 0.5;
+		th += 0.5;
 		
 	}
 	else if (k == 115) {
-		rotate_y += 0.5;
+		ph += 0.5;
 		
 	}
 	glutPostRedisplay();
