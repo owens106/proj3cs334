@@ -8,7 +8,7 @@ GLfloat rotate_x=0;
 GLfloat rotate_y=0;
 double asp = 1;
 double dim = 3.0;
-int fov = 55;
+int fov = 90;
 double th = 0.0;
 double ph = 0.0;
 
@@ -16,23 +16,36 @@ double ph = 0.0;
 #define Cos(th) cos(PI/180*(th))
 #define Sin(th) sin(PI/180*(th))
 
+BOOLEAN Lclick = false;
 
 
 
 void init() {
 	// Set initial OpenGL states
 }
-
 void project() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	gluPerspective(fov, asp, dim/4, dim*4); // aperture, aspect, near, far
+	gluPerspective(fov, asp, dim / 4, dim * 4); // aperture, aspect, near, far
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
+
 }
+void resize(int width, int height) {
+	//this is called on window resize
+	//params are window width and window height
+	int min = width;
+	if (height < width) {
+		min = height;
+	}
+	glViewport(0, 0, min, min); //keeps viewport a square
+	asp = (height > 0) ? (double)width / height : 1;
+	project();
+	glutPostRedisplay();
+}
+
 void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zpos) { 
 
 	glBegin(GL_POLYGON); //front face
@@ -93,7 +106,6 @@ void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zp
 	glEnd();
 
 	glFlush();
-	glutSwapBuffers();
 }
 void drawCube() {
 	glBegin(GL_POLYGON);
@@ -177,19 +189,29 @@ void display() {
 	
 	
 
-	double Ex = -2.0 * dim * Sin(th) * Cos(ph);
-	double Ey = 2.0 * dim * Sin(ph);
-	double Ez = 2.0 * dim * Cos(th) * Cos(ph);
+	double Ex = 1.0 * dim * Sin(th) * Cos(ph);
+	double Ey = 1.0 * dim * Sin(ph);
+	double Ez = -1.0 * dim * Cos(th) * Cos(ph);
 	gluLookAt(Ex, Ey, Ez, 0, 0, 0, 0, Cos(ph), 0);
-	drawCubeLocation(0.0, 0.0, 0.2, 0.0);
+	drawCubeLocation(-0.0, -0.0, 0.1, -0.0);
+	drawCubeLocation(-0.6, -0.6, 0.1, -0.4);
+	drawCubeLocation(0.6, 0.6, 0.1, 0.4);
+	drawCubeLocation(0.6, -0.6, 0.1, 0.2);
+	drawCubeLocation(-0.6, 0.6, 0.1, -0.2);
 
-	
+
+	//drawCubeLocation(-0.0, -0.0, 0.2, 0.5);
+
+	//drawCubeLocation(0.5, 0.5, 0.2, 0.7);
+
 	//glRotatef(rotate_x, 1.0, 0.0, 0.0);
 	//glRotatef(rotate_y, 0.0, 1.0, 0.0);
 	
-	rotate_x = 0;
+	//rotate_x = 0;
 	rotate_y = 0;
 	//drawCube();
+	glutSwapBuffers();
+
 }
 /*
 Function invoked when an event on a regular keys occur.
@@ -213,31 +235,42 @@ void keyboard(unsigned char k, int x, int y)
 		ph += 0.5;
 		
 	}
+	else if (k == 97) { // a key
+		rotate_x += 0.5;
+		printf("in 97");
+	}
 	glutPostRedisplay();
 }
 /*
 Mouse Handler
 */
 void mouseClick(int button, int mode, int x, int y) {
+	//button 0 is Lclick
+	//mode = 0 for down 1 for up
 	// event happens once on pushing the button and once more when releasing it
 	// button identifies what you clicked, mode if its down or up
+	printf("button: %d  mode: %d\n",button,mode);
+	if (button == 0 && mode == 0) {//Lclick pushed down
+		Lclick = true;
+	}
+	else {
+		Lclick = false;
+	}
+
+	
+	int z = glutGetModifiers();
+	if (z == 1 && Lclick) {//shift Lclick
+		printf("shift L click pressed\n");
+	}
+	else if (z == 2 && Lclick) {
+		printf("ctrl L click pressed\n");
+	}
 }
 void mouseMotion(int x, int y) {
 	// called when the mouse moves
 	// active motion means a button is down, passive means it is up
 }
-void resize(int width, int height) {
-	//this is called on window resize
-	//params are window width and window height
-	int min = width;
-	if (height < width) {
-		min = height;
-	}
-	glViewport(0, 0, min, min); //keeps viewport a square
-	asp = (height > 0) ? (double)width / height : 1;
-	project();
-	glutPostRedisplay();
-}
+
 
 /*
 The main function.
@@ -248,7 +281,7 @@ int main(int argc, char** argv)
 	glutInit(&argc, argv);
 	glViewport(0, 0, 600, 600);
 
-	glutInitWindowSize(600, 800);
+	glutInitWindowSize(600, 600);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
 	glutCreateWindow("project3");
 	glEnable(GL_DEPTH_TEST);
@@ -260,6 +293,7 @@ int main(int argc, char** argv)
 	glutMotionFunc(mouseMotion);
 	glutKeyboardFunc(keyboard);
 
+	gluPerspective(fov, asp, dim / 4, dim * 4); // aperture, aspect, near, far
 
 	glutMainLoop();
 	return 0;
