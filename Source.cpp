@@ -245,28 +245,6 @@ void keyboard(unsigned char k, int x, int y)
 		ph += 0.5;
 		
 	}
-	else if (k == 97) { // a key
-		rotate_x += 0.5;
-		printf("in 97");
-	}
-	else if (k == 106) {
-		xpos += 0.1;
-	}
-	else if (k == 107) {
-		ypos += 0.1;
-	}
-	else if (k == 108) {
-		zpos += 0.1;
-	}
-	else if (k == 110) {
-		xpos -= 0.1;
-	}
-	else if (k == 109) {
-		ypos -= 0.1;
-	}
-	else if (k == 46) {
-		zpos -= 0.1;
-	}
 	glutPostRedisplay();
 	project();
 }
@@ -297,21 +275,30 @@ void mouseClick(int button, int mode, int x, int y) {
 		printf(" %f: ", lmb[i]);
 	}
 	printf("\n");
-	
+
+	double xchange = (lmb[2] - lmb[0]) / windowWidth; // x change relative to window
+	double ychange = (lmb[3] - lmb[1]) / windowHeight; //y change relative to window
+
 	int z = glutGetModifiers();
 	if (z == 1 && Lclick && mode == 1) {//shift Lclick released
 		printf("shift L click pressed\n");
 		//translation
-		ShiftLclick = true; 
-		double xchange = (lmb[2] - lmb[0])/windowWidth; // x change relative to window
-		double ychange = (lmb[3] - lmb[1])/windowHeight; //y change relative to window
+		Lclick = false;
+		
 		xpos += xchange;
 		ypos += ychange;
 		project();
 	}
-	else if (z == 2 && Lclick) {
+	else if (z == 2 && Lclick && mode == 1) {
 		printf("ctrl L click pressed\n");
 		zoomfactor -=0.1;
+		Lclick = false;
+		project();
+	}
+	else if (z == 0 && Lclick && mode == 1) {
+		//Left click released, no special input
+		th += (xchange* 25);
+		ph += (ychange * 25);
 		project();
 	}
 }
