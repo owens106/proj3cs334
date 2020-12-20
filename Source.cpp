@@ -8,9 +8,13 @@ GLfloat rotate_x=0;
 GLfloat rotate_y=0;
 double asp = 1;
 double dim = 3.0;
-int fov = 90;
+int fov = 45;
 double th = 0.0;
 double ph = 0.0;
+
+double xpos = 0.0;
+double ypos = 0.0;
+double zpos = 0.0;
 
 #define PI 3.141592653
 #define Cos(th) cos(PI/180*(th))
@@ -193,7 +197,7 @@ void display() {
 	double Ex = 1.0 * dim * Sin(th) * Cos(ph);
 	double Ey = 1.0 * dim * Sin(ph);
 	double Ez = -1.0 * dim * Cos(th) * Cos(ph);
-	gluLookAt(Ex, Ey, Ez, 0, 0, 0, 0, Cos(ph), 0);
+	gluLookAt(Ex, Ey, Ez, xpos, ypos, zpos, 0, Cos(ph), 0);
 
 
 	drawCubeLocation(-0.0f, -0.0f, 0.1f, -0.0f);
@@ -242,7 +246,26 @@ void keyboard(unsigned char k, int x, int y)
 		rotate_x += 0.5;
 		printf("in 97");
 	}
+	else if (k == 106) {
+		xpos += 0.1;
+	}
+	else if (k == 107) {
+		ypos += 0.1;
+	}
+	else if (k == 108) {
+		zpos += 0.1;
+	}
+	else if (k == 110) {
+		xpos -= 0.1;
+	}
+	else if (k == 109) {
+		ypos -= 0.1;
+	}
+	else if (k == 46) {
+		zpos -= 0.1;
+	}
 	glutPostRedisplay();
+	project();
 }
 /*
 Mouse Handler
@@ -267,7 +290,7 @@ void mouseClick(int button, int mode, int x, int y) {
 	}
 	else if (z == 2 && Lclick) {
 		printf("ctrl L click pressed\n");
-		zoomfactor +=0.1;
+		zoomfactor -=0.1;
 		project();
 	}
 }
