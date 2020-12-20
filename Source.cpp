@@ -15,6 +15,7 @@ double ph = 0.0;
 #define PI 3.141592653
 #define Cos(th) cos(PI/180*(th))
 #define Sin(th) sin(PI/180*(th))
+double zoomfactor = 1.0;
 
 BOOLEAN Lclick = false;
 
@@ -27,7 +28,7 @@ void project() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	gluPerspective(fov, asp, dim / 4, dim * 4); // aperture, aspect, near, far
+	gluPerspective(fov * zoomfactor, asp, dim / 4, dim * 4); // aperture, aspect, near, far
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
@@ -193,11 +194,13 @@ void display() {
 	double Ey = 1.0 * dim * Sin(ph);
 	double Ez = -1.0 * dim * Cos(th) * Cos(ph);
 	gluLookAt(Ex, Ey, Ez, 0, 0, 0, 0, Cos(ph), 0);
-	drawCubeLocation(-0.0, -0.0, 0.1, -0.0);
-	drawCubeLocation(-0.6, -0.6, 0.1, -0.4);
-	drawCubeLocation(0.6, 0.6, 0.1, 0.4);
-	drawCubeLocation(0.6, -0.6, 0.1, 0.2);
-	drawCubeLocation(-0.6, 0.6, 0.1, -0.2);
+
+
+	drawCubeLocation(-0.0f, -0.0f, 0.1f, -0.0f);
+	drawCubeLocation(-0.6f, -0.6f, 0.1f, -0.4f);
+	drawCubeLocation(0.6f, 0.6f, 0.1f, 0.4f);
+	drawCubeLocation(0.6f, -0.6f, 0.1f, 0.2f);
+	drawCubeLocation(-0.6f, 0.6f, 0.1f, -0.2f);
 
 
 	//drawCubeLocation(-0.0, -0.0, 0.2, 0.5);
@@ -264,6 +267,8 @@ void mouseClick(int button, int mode, int x, int y) {
 	}
 	else if (z == 2 && Lclick) {
 		printf("ctrl L click pressed\n");
+		zoomfactor +=0.1;
+		project();
 	}
 }
 void mouseMotion(int x, int y) {
