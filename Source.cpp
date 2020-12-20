@@ -12,65 +12,130 @@ void init() {
 }
 void drawCube() {
 	glBegin(GL_POLYGON);
-
 	glColor3f(1.0, 0.0, 0.0);     
-	glVertex3f(0.5, -0.5, -0.5);      // P1 is red
-
-	glColor3f(0.0, 1.0, 0.0);     
-	glVertex3f(0.5, 0.5, -0.5);      // P2 is green
-
+	glVertex3f(0.0, -0.5, -0.5); // P1 is red
+	
+	glColor3f(0.0, 1.0, 0.0); 
+	glVertex3f(0.0, 0.5, -0.5); // P2 is green
+	
 	glColor3f(0.0, 0.0, 1.0);     
-	glVertex3f(-0.5, 0.5, -0.5);      // P3 is blue
-
+	glVertex3f(-1.0, 0.5, -0.5);  // P3 is blue
+	
 	glColor3f(1.0, 0.0, 1.0);     
-	glVertex3f(-0.5, -0.5, -0.5);      // P4 is purple
+	glVertex3f(-1.0, -0.5, -0.5);      // P4 is purple
 
 	glEnd();
 
 	// White side - BACK
 	glBegin(GL_POLYGON);
 	glColor3f(1.0, 1.0, 1.0);
-	glVertex3f(0.5, -0.5, 0.5);
-	glVertex3f(0.5, 0.5, 0.5);
-	glVertex3f(-0.5, 0.5, 0.5);
-	glVertex3f(-0.5, -0.5, 0.5);
+	glVertex3f(0.0, -0.5, 0.5);
+	glVertex3f(0.0, 0.5, 0.5);
+	glVertex3f(-1.0, 0.5, 0.5);
+	glVertex3f(-1.0, -0.5, 0.5);
 	glEnd();
 
 	// Purple side - RIGHT
 	glBegin(GL_POLYGON);
 	glColor3f(1.0, 0.0, 1.0);
-	glVertex3f(0.5, -0.5, -0.5);
-	glVertex3f(0.5, 0.5, -0.5);
-	glVertex3f(0.5, 0.5, 0.5);
-	glVertex3f(0.5, -0.5, 0.5);
+	glVertex3f(0.0, -0.5, -0.5);
+	glVertex3f(0.0, 0.5, -0.5);
+	glVertex3f(0.0, 0.5, 0.5);
+	glVertex3f(0.0, -0.5, 0.5);
 	glEnd();
 
 	// Green side - LEFT
 	glBegin(GL_POLYGON);
 	glColor3f(0.0, 1.0, 0.0);
-	glVertex3f(-0.5, -0.5, 0.5);
-	glVertex3f(-0.5, 0.5, 0.5);
-	glVertex3f(-0.5, 0.5, -0.5);
-	glVertex3f(-0.5, -0.5, -0.5);
+	glVertex3f(-1.0, -0.5, 0.5);
+	glVertex3f(-1.0, 0.5, 0.5);
+	glVertex3f(-1.0, 0.5, -0.5);
+	glVertex3f(-1.0, -0.5, -0.5);
 	glEnd();
 
 	// Blue side - TOP
 	glBegin(GL_POLYGON);
 	glColor3f(0.0, 0.0, 1.0);
-	glVertex3f(0.5, 0.5, 0.5);
-	glVertex3f(0.5, 0.5, -0.5);
-	glVertex3f(-0.5, 0.5, -0.5);
-	glVertex3f(-0.5, 0.5, 0.5);
+	glVertex3f(0.0, 0.5, 0.5);
+	glVertex3f(0.0, 0.5, -0.5);
+	glVertex3f(-1.0, 0.5, -0.5);
+	glVertex3f(-1.0, 0.5, 0.5);
 	glEnd();
 
 	// Red side - BOTTOM
 	glBegin(GL_POLYGON);
 	glColor3f(1.0, 0.0, 0.0);
-	glVertex3f(0.5, -0.5, -0.5);
-	glVertex3f(0.5, -0.5, 0.5);
-	glVertex3f(-0.5, -0.5, 0.5);
-	glVertex3f(-0.5, -0.5, -0.5);
+	glVertex3f(0.0, -0.5, -0.5);
+	glVertex3f(0.0, -0.5, 0.5);
+	glVertex3f(-1.0, -0.5, 0.5);
+	glVertex3f(-1.0, -0.5, -0.5);
 	glEnd();
+
+
+
+	//cube2
+	glBegin(GL_POLYGON);
+	glColor3f(1.0, 0.0, 0.0);     
+	glVertex3f(1.0, 0.0, -0.0);      // P1 is red
+
+	glColor3f(0.0, 1.0, 0.0);     
+	glVertex3f(1.0, 1.0, -0.0);      // P2 is green
+
+	glColor3f(0.0, 0.0, 1.0);     
+	glVertex3f(0.0, 1.0, -0.0);      // P3 is blue
+
+	glColor3f(1.0, 0.0, 1.0);     
+	glVertex3f(0.0, 0.0, -0.0);      // P4 is purple
+
+	glEnd();
+
+	// White side - BACK
+	glBegin(GL_POLYGON);
+	glColor3f(1.0, 1.0, 1.0);
+	glVertex3f(1.0, -0.0, 1.0);
+	glVertex3f(1.0, 1.0, 1.0);
+	glVertex3f(-0.0, 1.0, 1.0);
+	glVertex3f(-0.0, -0.0, 1.0);
+	glEnd();
+
+	// Purple side - RIGHT
+	glBegin(GL_POLYGON);
+	glColor3f(1.0, 0.0, 1.0);
+	glVertex3f(1.0, -0.0, -0.0);
+	glVertex3f(1.0, 1.0, -0.0);
+	glVertex3f(1.0, 1.0, 1.0);
+	glVertex3f(1.0, -0.0, 1.0);
+	glEnd();
+
+	// Green side - LEFT
+	glBegin(GL_POLYGON);
+	glColor3f(0.0, 1.0, 0.0);
+	glVertex3f(-0.0, -0.0, 1.0);
+	glVertex3f(-0.0, 1.0, 1.0);
+	glVertex3f(-0.0, 1.0, -0.0);
+	glVertex3f(-0.0, -0.0, -0.0);
+	glEnd();
+
+	// Blue side - TOP
+	glBegin(GL_POLYGON);
+	glColor3f(0.0, 0.0, 1.0);
+	glVertex3f(1.0, 1.0, 1.0);
+	glVertex3f(1.0, 1.0, -0.0);
+	glVertex3f(-0.0, 1.0, -0.0);
+	glVertex3f(-0.0, 1.0, 1.0);
+	glEnd();
+
+	// Red side - BOTTOM
+	glBegin(GL_POLYGON);
+	glColor3f(1.0, 0.0, 0.0);
+	glVertex3f(1.0, -0.0, -0.0);
+	glVertex3f(1.0, -0.0, 1.0);
+	glVertex3f(-0.0, -0.0, 1.0);
+	glVertex3f(-0.0, -0.0, -0.0);
+	glEnd();
+
+
+
 
 
 	//draw and swap buffers
@@ -93,19 +158,19 @@ void display() {
 	
 	drawCube();
 
-	glMatrixMode(GL_PROJECTION);
+	/*glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	gluPerspective(45, 1.0, 0.1, 100.01); // aperture, aspect, near, far
+	gluPerspective(45, 1.0, 0.3, 100.01); // aperture, aspect, near, far
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	
+	*/
 	
 	
 	glRotatef(rotate_x, 1.0, 0.0, 0.0);
 	glRotatef(rotate_y, 0.0, 1.0, 0.0);
-
+	
 	rotate_x = 0;
 	rotate_y = 0;
 }
