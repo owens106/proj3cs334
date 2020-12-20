@@ -16,7 +16,7 @@ double xpos = 0.0;
 double ypos = 0.0;
 double zpos = 0.0;
 
-#define PI 3.141592653
+#define PI 3.1415926535897932384626433832795
 #define Cos(th) cos(PI/180*(th))
 #define Sin(th) sin(PI/180*(th))
 double zoomfactor = 1.0;
@@ -35,21 +35,28 @@ void project() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
+	double windowHeight = glutGet(GLUT_SCREEN_HEIGHT);
+	double windowWidth = glutGet(GLUT_SCREEN_WIDTH);
+
 	gluPerspective(fov * zoomfactor, asp, dim / 4, dim * 4); // aperture, aspect, near, far
+
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 }
 void resize(int width, int height) {
+	asp = (height > 0) ? (double)width / height : 1;
+	printf("\nasp:%f", asp);
+
 	//this is called on window resize
 	//params are window width and window height
 	int min = width;
 	if (height < width) {
 		min = height;
 	}
+	printf("\n width: %d, height: %d, min: %d",width,height,min);
 	glViewport(0, 0, min, min); //keeps viewport a square
-	asp = (height > 0) ? (double)width / height : 1;
 	project();
 	glutPostRedisplay();
 }
@@ -78,6 +85,30 @@ void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zp
 	glVertex3f(xcenter + size, ycenter - size, zpos + size); //bottom right
 	glVertex3f(xcenter - size, ycenter - size, zpos + size); //bottom left
 	glVertex3f(xcenter - size, ycenter + size, zpos + size); //top left
+	glEnd();
+
+	glBegin(GL_TRIANGLES);
+	glColor3f(1.0, 1.0, 0.0);
+
+	glVertex3f(0, 0, 0);
+	glVertex3f(xcenter - size, ycenter + size, zpos + size); //top left
+	glVertex3f(xcenter - size+0.02, ycenter + size, zpos + size); //top left
+
+	glVertex3f(0, 0, 0);
+	glVertex3f(xcenter - size, ycenter - size, zpos + size); //bottom left
+	glVertex3f(xcenter - size+.02, ycenter - size, zpos + size); //bottom left
+
+	glVertex3f(0, 0, 0);
+	glVertex3f(xcenter + size, ycenter - size, zpos + size); //bottom right
+	glVertex3f(xcenter + size+.02, ycenter - size, zpos + size); //bottom right
+
+	glVertex3f(0, 0, 0);
+	glVertex3f(xcenter + size, ycenter + size, zpos + size); //top right
+	glVertex3f(xcenter + size+0.02, ycenter + size, zpos + size); //top right
+
+
+
+
 	glEnd();
 
 
@@ -115,88 +146,13 @@ void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zp
 
 	glFlush();
 }
-void drawCube() {
-	glBegin(GL_POLYGON);
-
-	glColor3f(1.0, 0.0, 0.0);   
-	glVertex3f(0.5, -0.5, -0.5);      // P1 is red
-
-	glColor3f(0.0, 1.0, 0.0);     
-	glVertex3f(0.5, 0.5, -0.5);      // P2 is green
-
-	glColor3f(0.0, 0.0, 1.0);    
-	glVertex3f(-0.5, 0.5, -0.5);      // P3 is blue
-
-	glColor3f(1.0, 0.0, 1.0);     
-	glVertex3f(-0.5, -0.5, -0.5);      // P4 is purple
-
-	glEnd();
-
-	// White side - BACK
-	glBegin(GL_POLYGON);
-	glColor3f(1.0, 1.0, 1.0);
-	glVertex3f(0.5, -0.5, 0.5);
-	glVertex3f(0.5, 0.5, 0.5);
-	glVertex3f(-0.5, 0.5, 0.5);
-	glVertex3f(-0.5, -0.5, 0.5);
-	glEnd();
-
-	// Purple side - RIGHT
-	glBegin(GL_POLYGON);
-	glColor3f(1.0, 0.0, 1.0);
-	glVertex3f(0.5, -0.5, -0.5);
-	glVertex3f(0.5, 0.5, -0.5);
-	glVertex3f(0.5, 0.5, 0.5);
-	glVertex3f(0.5, -0.5, 0.5);
-	glEnd();
-
-	// Green side - LEFT
-	glBegin(GL_POLYGON);
-	glColor3f(0.0, 1.0, 0.0);
-	glVertex3f(-0.5, -0.5, 0.5);
-	glVertex3f(-0.5, 0.5, 0.5);
-	glVertex3f(-0.5, 0.5, -0.5);
-	glVertex3f(-0.5, -0.5, -0.5);
-	glEnd();
-
-	// Blue side - TOP
-	glBegin(GL_POLYGON);
-	glColor3f(0.0, 0.0, 1.0);
-	glVertex3f(0.5, 0.5, 0.5);
-	glVertex3f(0.5, 0.5, -0.5);
-	glVertex3f(-0.5, 0.5, -0.5);
-	glVertex3f(-0.5, 0.5, 0.5);
-	glEnd();
-
-	// Red side - BOTTOM
-	glBegin(GL_POLYGON);
-	glColor3f(1.0, 0.0, 0.0);
-	glVertex3f(0.5, -0.5, -0.5);
-	glVertex3f(0.5, -0.5, 0.5);
-	glVertex3f(-0.5, -0.5, 0.5);
-	glVertex3f(-0.5, -0.5, -0.5);
-	glEnd();
-
-	//draw and swap buffers
-	glFlush();
-	glutSwapBuffers();
-
-}
 // display function
 void display() {
 	// Clear the window
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-	//glShadeModel(GL_FLAT);
-	//glEnableClientState(GL_VERTEX_ARRAY);
-	//glEnableClientState(GL_COLOR_ARRAY);
-
-
 	glLoadIdentity();
 	
-	
-
 	double Ex = 1.0 * dim * Sin(th) * Cos(ph);
 	double Ey = 1.0 * dim * Sin(ph);
 	double Ez = -1.0 * dim * Cos(th) * Cos(ph);
@@ -209,17 +165,6 @@ void display() {
 	drawCubeLocation(0.6f, -0.6f, 0.1f, 0.2f);
 	drawCubeLocation(-0.6f, 0.6f, 0.1f, -0.2f);
 
-
-	//drawCubeLocation(-0.0, -0.0, 0.2, 0.5);
-
-	//drawCubeLocation(0.5, 0.5, 0.2, 0.7);
-
-	//glRotatef(rotate_x, 1.0, 0.0, 0.0);
-	//glRotatef(rotate_y, 0.0, 1.0, 0.0);
-	
-	//rotate_x = 0;
-	rotate_y = 0;
-	//drawCube();
 	glutSwapBuffers();
 
 }
@@ -292,13 +237,16 @@ void mouseClick(int button, int mode, int x, int y) {
 	else if (z == 2 && Lclick && mode == 1) {
 		printf("ctrl L click pressed\n");
 		zoomfactor -=0.1;
+		if (zoomfactor < 0.0) {
+			zoomfactor = 1;
+		}
 		Lclick = false;
 		project();
 	}
 	else if (z == 0 && Lclick && mode == 1) {
 		//Left click released, no special input
-		th += (xchange* 25);
-		ph += (ychange * 25);
+		th += (xchange* 100);
+		ph += (ychange * 100);
 		project();
 	}
 }
@@ -306,7 +254,6 @@ void mouseMotion(int x, int y) {
 	// called when the mouse moves
 	// active motion means a button is down, passive means it is up
 }
-
 
 /*
 The main function.
@@ -333,4 +280,5 @@ int main(int argc, char** argv)
 
 	glutMainLoop();
 	return 0;
+	
 }
