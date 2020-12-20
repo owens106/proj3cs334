@@ -93,12 +93,14 @@ void display() {
 	
 	drawCube();
 
-	/*glMatrixMode(GL_PROJECTION);
+	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(100, 1.0, 0.5, 100.01); // aperture, aspect, near, far
+
+	gluPerspective(45, 1.0, 0.1, 100.01); // aperture, aspect, near, far
+
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	*/
+	
 	
 	
 	glRotatef(rotate_x, 1.0, 0.0, 0.0);
@@ -160,7 +162,7 @@ int main(int argc, char** argv)
 {
 	// Initialize the GLUT window
 	glutInit(&argc, argv);
-	glViewport(0, 0, 300, 300);
+	glViewport(0, 0, 600, 600);
 
 	glutInitWindowSize(600, 800);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
@@ -175,9 +177,6 @@ int main(int argc, char** argv)
 	glutReshapeFunc(resize);
 	glutMotionFunc(mouseMotion);
 	glutKeyboardFunc(keyboard);
-
-	glRotatef(360, 1.0, 0.0, 0.0);
-	glRotatef(360, 0.0, 1.0, 0.0);
 
 
 	glutMainLoop();
