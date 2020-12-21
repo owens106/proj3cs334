@@ -50,7 +50,6 @@ void project() {
 }
 void resize(int width, int height) {
 	asp = (height > 0) ? (double)width / height : 1;
-	printf("\nasp:%f", asp);
 
 	//this is called on window resize
 	//params are window width and window height
@@ -58,7 +57,6 @@ void resize(int width, int height) {
 	if (height < width) {
 		min = height;
 	}
-	printf("\n width: %d, height: %d, min: %d",width,height,min);
 	glViewport(0, 0, min, min); //keeps viewport a square
 	project();
 	glutPostRedisplay();
@@ -168,11 +166,16 @@ void display() {
 	drawCubeLocation(0.6f, -0.6f, 0.1f, 0.2f);
 	drawCubeLocation(-0.6f, 0.6f, 0.1f, -0.2f);
 
-	glBegin(GL_LINES);
-	for (GLfloat i = 0; i < 1; i += 0.1) {
-		glVertex3f(i, 0.0, 1.0);
+	
+	if (horizon) {
+		glBegin(GL_POLYGON);
+		glVertex3f(-1.0, 0.0, 1.0);
+		glVertex3f(-1.0, 0.05, 1.0);
+		glVertex3f(1.0, 0.05, 1.0);
+		glVertex3f(1.0, 0.0, 1.0);
+
+		glEnd();
 	}
-	glEnd();
 
 	glutSwapBuffers();
 
@@ -189,9 +192,7 @@ void keyboard(unsigned char k, int x, int y)
 		exit(0);
 	}
 
-	printf("\nchar: %u, x: %d, y: %d\n", k, x, y);
 	if (k == 119) {
-		printf("w was pressed");
 		th += 0.5;
 		
 	}
@@ -213,7 +214,6 @@ void mouseClick(int button, int mode, int x, int y) {
 	double windowHeight = glutGet(GLUT_SCREEN_HEIGHT);
 	double windowWidth = glutGet(GLUT_SCREEN_WIDTH);
 
-	printf("button: %d  mode: %d\n",button,mode);
 	if (button == 0 && mode == 0) {//Lclick pushed down
 		Lclick = true;
 		lmb[0] = x;
@@ -226,16 +226,13 @@ void mouseClick(int button, int mode, int x, int y) {
 
 	}
 	for (int i = 0; i < 4; i++) {
-		printf(" %f: ", lmb[i]);
 	}
-	printf("\n");
 
 	double xchange = (lmb[2] - lmb[0]) / windowWidth; // x change relative to window
 	double ychange = (lmb[3] - lmb[1]) / windowHeight; //y change relative to window
 
 	int z = glutGetModifiers();
 	if (z == 1 && Lclick && mode == 1) {//shift Lclick released
-		printf("shift L click pressed\n");
 		//translation
 		Lclick = false;
 		
@@ -244,7 +241,6 @@ void mouseClick(int button, int mode, int x, int y) {
 		project();
 	}
 	else if (z == 2 && Lclick && mode == 1) {
-		printf("ctrl L click pressed\n");
 		zoomfactor -=0.1;
 		if (zoomfactor < 0.0) {
 			zoomfactor = 1;
@@ -269,7 +265,6 @@ The main function.
 */
 
 void handleMenu(int choice) {
-	printf("choice:%d\n", choice);
 
 	switch (choice) {
 	case 5:
