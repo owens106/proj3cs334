@@ -23,8 +23,11 @@ double zoomfactor = 1.0;
 
 double lmb[4] = { 0, 0, 0, 0 };
 
+int menu;
+int submenu_id;
 BOOLEAN Lclick = false;
 BOOLEAN ShiftLclick = false;
+BOOLEAN horizon = true;
 
 
 
@@ -165,6 +168,12 @@ void display() {
 	drawCubeLocation(0.6f, -0.6f, 0.1f, 0.2f);
 	drawCubeLocation(-0.6f, 0.6f, 0.1f, -0.2f);
 
+	glBegin(GL_LINES);
+	for (GLfloat i = 0; i < 1; i += 0.1) {
+		glVertex3f(i, 0.0, 1.0);
+	}
+	glEnd();
+
 	glutSwapBuffers();
 
 }
@@ -258,6 +267,61 @@ void mouseMotion(int x, int y) {
 /*
 The main function.
 */
+
+void handleMenu(int choice) {
+	printf("choice:%d\n", choice);
+
+	switch (choice) {
+	case 5:
+		fov = 30;
+		break;
+	case 6:
+		fov = 45;
+		break;
+	case 7:
+		fov = 60;
+		break;
+	case 8:
+		fov = 75;
+		break;
+	case 1:
+		exit(0);
+		break;
+	case 2:
+		zoomfactor = 1.0;
+		ph = 0;
+		th = 0;
+		fov = 55;
+		xpos = 0;
+		ypos = 0;
+		break;
+	case 3:
+		horizon = !horizon;
+		break;
+	}
+
+	project();
+	glutPostRedisplay();
+}
+
+void createMenu() {
+	submenu_id = glutCreateMenu(handleMenu);
+	glutAddMenuEntry("30", 5);
+	glutAddMenuEntry("45", 6);
+	glutAddMenuEntry("60", 7);
+	glutAddMenuEntry("75", 8);     
+	
+	menu = glutCreateMenu(handleMenu);
+	glutAddMenuEntry("Exit", 1);
+	glutAddMenuEntry("reset", 2);
+	glutAddMenuEntry("show Horizon", 3);
+	glutAddMenuEntry("Show Perspectve", 4);
+
+	glutAddSubMenu("set Aperture", submenu_id);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+}
+
 int main(int argc, char** argv)
 {
 	// Initialize the GLUT window
@@ -277,7 +341,7 @@ int main(int argc, char** argv)
 	glutKeyboardFunc(keyboard);
 
 	gluPerspective(fov, asp, dim / 4, dim * 4); // aperture, aspect, near, far
-
+	createMenu();
 	glutMainLoop();
 	return 0;
 	
