@@ -21,6 +21,18 @@
     <Library Include="..\..\..\Desktop\proj2\freeglutd.lib">
       <Filter>Resource Files</Filter>
     </Library>
+    <Library Include="..\..\..\Desktop\freshglui\glui_etc\glui_staticd.lib">
+      <Filter>Source Files</Filter>
+    </Library>
+    <Library Include="..\..\..\Desktop\freshglui\glui_etc\freeglutd.lib">
+      <Filter>Source Files</Filter>
+    </Library>
+    <Library Include="..\..\..\Desktop\freshglui\glui_etc\glui_static.lib">
+      <Filter>Source Files</Filter>
+    </Library>
+    <Library Include="..\..\..\Desktop\freshglui\glui_etc\GL\freeglut.lib">
+      <Filter>Source Files</Filter>
+    </Library>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\Desktop\proj2\NoShader.sln" />
@@ -29,6 +41,9 @@
     <None Include="..\..\..\Desktop\proj2\NoShader.vcxproj.user" />
     <None Include="..\..\..\Desktop\proj2\freeglutd.dll">
       <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\..\Desktop\freshglui\glui_etc\freeglutd.dll">
+      <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
   <ItemGroup>

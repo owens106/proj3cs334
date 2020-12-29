@@ -1,14 +1,18 @@
 
 
+
 #include "glut.h"
+#include "glui.h"
 #include <iostream>
 #include <gl/GL.h>
+
+
 
 GLfloat rotate_x=0;
 GLfloat rotate_y=0;
 double asp = 1;
 double dim = 3.0;
-int fov = 45;
+int fov = 30;
 double th = 0.0;
 double ph = 0.0;
 
@@ -22,14 +26,18 @@ double zpos = 0.0;
 double zoomfactor = 1.0;
 
 double lmb[4] = { 0, 0, 0, 0 };
+double lmDrag[2] = { 0,0 };
 
 int menu;
 int submenu_id;
 BOOLEAN Lclick = false;
 BOOLEAN ShiftLclick = false;
-BOOLEAN horizon = true;
 
-
+int horizon;
+int segments;
+int main_window;
+int listboxID=30;
+float spinnerFloat=1.0;
 
 void init() {
 	// Set initial OpenGL states
@@ -41,7 +49,7 @@ void project() {
 	double windowHeight = glutGet(GLUT_SCREEN_HEIGHT);
 	double windowWidth = glutGet(GLUT_SCREEN_WIDTH);
 
-	gluPerspective(fov * zoomfactor, asp, dim / 4, dim * 4); // aperture, aspect, near, far
+	gluPerspective(fov * spinnerFloat, asp, dim / 4, dim * 4); // aperture, aspect, near, far
 
 
 	glMatrixMode(GL_MODELVIEW);
@@ -150,6 +158,10 @@ void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zp
 // display function
 void display() {
 	// Clear the window
+	if (listboxID != 0) {
+		fov = listboxID;
+		project();
+	}
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
@@ -166,7 +178,6 @@ void display() {
 	drawCubeLocation(0.6f, -0.6f, 0.1f, 0.2f);
 	drawCubeLocation(-0.6f, 0.6f, 0.1f, -0.2f);
 
-	
 	if (horizon) {
 		glBegin(GL_POLYGON);
 		glVertex3f(-1.0, 0.0, 1.0);
@@ -218,6 +229,8 @@ void mouseClick(int button, int mode, int x, int y) {
 		Lclick = true;
 		lmb[0] = x;
 		lmb[1] = y;
+		lmDrag[0] = x;
+		lmDrag[1] = y;
 	}
 	if(button == 0 && mode == 1 ){//Left click unclicked
 		//Lclick = false;
@@ -225,8 +238,7 @@ void mouseClick(int button, int mode, int x, int y) {
 		lmb[3] = y;
 
 	}
-	for (int i = 0; i < 4; i++) {
-	}
+
 
 	double xchange = (lmb[2] - lmb[0]) / windowWidth; // x change relative to window
 	double ychange = (lmb[3] - lmb[1]) / windowHeight; //y change relative to window
@@ -250,14 +262,31 @@ void mouseClick(int button, int mode, int x, int y) {
 	}
 	else if (z == 0 && Lclick && mode == 1) {
 		//Left click released, no special input
-		th += (xchange* 100);
-		ph += (ychange * 100);
-		project();
+		Lclick = false;
+		//th += (xchange* 100);
+		//ph += (ychange * 100);
+		//project();
 	}
 }
 void mouseMotion(int x, int y) {
 	// called when the mouse moves
 	// active motion means a button is down, passive means it is up
+	double windowHeight = glutGet(GLUT_SCREEN_HEIGHT);
+	double windowWidth = glutGet(GLUT_SCREEN_WIDTH);
+
+	GLfloat xdiff = (lmDrag[0] - (GLfloat)x)/windowWidth;
+	GLfloat ydiff = (lmDrag[1] - (GLfloat)y)/windowHeight;
+
+	int z = glutGetModifiers();
+	if (Lclick && z == 0) {
+		lmDrag[0] = x;
+		lmDrag[1] = y;
+		th += xdiff*150;
+		ph += ydiff*150;
+
+	}
+	project();
+
 }
 
 /*
@@ -317,6 +346,18 @@ void createMenu() {
 
 }
 
+
+void myGlutIdle(void)
+{
+	/* According to the GLUT specification, the current window is
+	   undefined during an idle callback.  So we need to explicitly change
+	   it if necessary */
+	if (glutGetWindow() != main_window)
+		glutSetWindow(main_window);
+
+	glutPostRedisplay();
+}
+
 int main(int argc, char** argv)
 {
 	// Initialize the GLUT window
@@ -325,7 +366,7 @@ int main(int argc, char** argv)
 
 	glutInitWindowSize(600, 600);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE | GLUT_DEPTH);
-	glutCreateWindow("project3");
+	main_window = glutCreateWindow("project3");
 	glEnable(GL_DEPTH_TEST);
 
 
@@ -337,6 +378,48 @@ int main(int argc, char** argv)
 
 	gluPerspective(fov, asp, dim / 4, dim * 4); // aperture, aspect, near, far
 	createMenu();
+
+	GLUI* glui = GLUI_Master.create_glui("GLUI");
+
+	glui->add_checkbox("Horizoin", &horizon);
+
+
+	//GLUI_Spinner* segment_spinner =  //Can be used for T in Program 5
+	//	glui->add_spinner("Segments:", GLUI_SPINNER_INT, &segments);
+	//segment_spinner->set_int_limits(3, 60);
+
+	glui->set_main_gfx_window(main_window);
+
+
+	GLUI_Spinner* segment_spinner =  //Can be used for T in Program 5
+		glui->add_spinner("Zoom Level:", GLUI_SPINNER_FLOAT, &spinnerFloat);
+	segment_spinner->set_int_limits(0.0,1.5);
+
+
+	GLUI_Listbox* listbox = glui->add_listbox("Aperture Value",&listboxID);
+	listbox->add_item(30, "30");
+	listbox->add_item(45, "45");
+	listbox->add_item(60, "60");
+	listbox->add_item(75, "75");
+
+
+	printf("listbox selecteion: %d\n", listbox->get_int_val());
+
+
+	glui->add_statictext("Example 2");
+	glui->add_separator();
+	GLUI_Panel* obj_panel = glui->add_panel("Test Panel");
+	glui->add_button("Quit", 0, (GLUI_Update_CB)exit);
+	GLUI_RadioGroup* group1 = glui->add_radiogroup_to_panel(obj_panel);
+	glui->add_radiobutton_to_group(group1, "Option 1");
+	glui->add_radiobutton_to_group(group1, "Option 2");
+	GLUI_Rotation* arcball = glui->add_rotation("ball (doesn't do anything)");
+
+	/* We register the idle callback with GLUI, *not* with GLUT */
+	GLUI_Master.set_glutIdleFunc(myGlutIdle);
+	GLUI_Master.set_glutReshapeFunc(resize);
+
+
 	glutMainLoop();
 	return 0;
 	
