@@ -7,7 +7,6 @@
 #include <gl/GL.h>
 
 
-
 GLfloat rotate_x=0;
 GLfloat rotate_y=0;
 double asp = 1;
@@ -38,6 +37,11 @@ int segments;
 int main_window;
 int listboxID=30;
 float spinnerFloat=1.0;
+
+//GLUI VARS
+GLUI_Spinner* segment_spinner;
+GLUI_Listbox* listbox;
+
 
 void init() {
 	// Set initial OpenGL states
@@ -239,7 +243,6 @@ void mouseClick(int button, int mode, int x, int y) {
 
 	}
 
-
 	double xchange = (lmb[2] - lmb[0]) / windowWidth; // x change relative to window
 	double ychange = (lmb[3] - lmb[1]) / windowHeight; //y change relative to window
 
@@ -328,6 +331,39 @@ void handleMenu(int choice) {
 	glutPostRedisplay();
 }
 
+void buttonPush(int val) {
+	switch (val)
+	{
+	case (1):
+		xpos += 0.1;
+		break;
+	case (2):
+		xpos -= 0.1;
+		break;
+	case(3):
+		ypos -= 0.1;
+		break;
+	case(4):
+		ypos += 0.1;
+		break;
+	case(5):
+		//reset
+		zoomfactor = 1.0;
+		ph = 0;
+		th = 0;
+		fov = 30;
+		xpos = 0;
+		ypos = 0;
+		segment_spinner->set_float_val(1.0);
+		listbox->set_int_val(30);
+		break;
+		
+	
+	}
+	project();
+}
+
+
 void createMenu() {
 	submenu_id = glutCreateMenu(handleMenu);
 	glutAddMenuEntry("30", 5);
@@ -379,7 +415,7 @@ int main(int argc, char** argv)
 	gluPerspective(fov, asp, dim / 4, dim * 4); // aperture, aspect, near, far
 	createMenu();
 
-	GLUI* glui = GLUI_Master.create_glui("GLUI");
+	GLUI* glui = GLUI_Master.create_glui("GLUI",0,400,400);
 
 	glui->add_checkbox("Horizoin", &horizon);
 
@@ -391,34 +427,39 @@ int main(int argc, char** argv)
 	glui->set_main_gfx_window(main_window);
 
 
-	GLUI_Spinner* segment_spinner =  //Can be used for T in Program 5
+	segment_spinner =  //Can be used for T in Program 5
 		glui->add_spinner("Zoom Level:", GLUI_SPINNER_FLOAT, &spinnerFloat);
 	segment_spinner->set_int_limits(0.0,1.5);
 
-
-	GLUI_Listbox* listbox = glui->add_listbox("Aperture Value",&listboxID);
+	listbox = glui->add_listbox("Aperture Value",&listboxID);
 	listbox->add_item(30, "30");
 	listbox->add_item(45, "45");
 	listbox->add_item(60, "60");
 	listbox->add_item(75, "75");
 
 
-	printf("listbox selecteion: %d\n", listbox->get_int_val());
-
-
-	glui->add_statictext("Example 2");
 	glui->add_separator();
-	GLUI_Panel* obj_panel = glui->add_panel("Test Panel");
+
+	GLUI_Panel* obj_panel = glui->add_panel("Translation");
+
+	glui->add_button("Translate Right", 1, buttonPush);
+	glui->add_button("Translate Left", 2, buttonPush);
+	glui->add_button("Translate Up", 3, buttonPush);
+	glui->add_button("Translate Down", 4, buttonPush);
+
+	glui->add_separator();
+
+	glui->add_button("Reset", 5, buttonPush);
 	glui->add_button("Quit", 0, (GLUI_Update_CB)exit);
-	GLUI_RadioGroup* group1 = glui->add_radiogroup_to_panel(obj_panel);
-	glui->add_radiobutton_to_group(group1, "Option 1");
-	glui->add_radiobutton_to_group(group1, "Option 2");
-	GLUI_Rotation* arcball = glui->add_rotation("ball (doesn't do anything)");
+
+
+	//GLUI_RadioGroup* group1 = glui->add_radiogroup_to_panel(obj_panel);
+	//glui->add_radiobutton_to_group(group1, "Option 1");
+	//glui->add_radiobutton_to_group(group1, "Option 2");
 
 	/* We register the idle callback with GLUI, *not* with GLUT */
 	GLUI_Master.set_glutIdleFunc(myGlutIdle);
 	GLUI_Master.set_glutReshapeFunc(resize);
-
 
 	glutMainLoop();
 	return 0;
