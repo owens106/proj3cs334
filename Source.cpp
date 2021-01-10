@@ -37,6 +37,7 @@ int segments;
 int main_window;
 int listboxID=30;
 float spinnerFloat=1.0;
+int infinityLines = 1;
 
 //GLUI VARS
 GLUI_Spinner* segment_spinner;
@@ -53,7 +54,7 @@ void project() {
 	double windowHeight = glutGet(GLUT_SCREEN_HEIGHT);
 	double windowWidth = glutGet(GLUT_SCREEN_WIDTH);
 
-	gluPerspective(fov * spinnerFloat, asp, dim / 4, dim * 4); // aperture, aspect, near, far
+	gluPerspective(fov * spinnerFloat, asp, dim / 4, dim * 400); // aperture, aspect, near, far
 
 
 	glMatrixMode(GL_MODELVIEW);
@@ -100,7 +101,7 @@ void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zp
 	glVertex3f(xcenter - size, ycenter + size, zpos + size); //top left
 	glEnd();
 
-	glBegin(GL_TRIANGLES);
+	/*glBegin(GL_TRIANGLES);
 	glColor3f(1.0, 1.0, 0.0);
 
 	glVertex3f(0, 0, 0);
@@ -118,7 +119,7 @@ void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zp
 	glVertex3f(0, 0, 0);
 	glVertex3f(xcenter + size, ycenter + size, zpos + size); //top right
 	glVertex3f(xcenter + size+0.02, ycenter + size, zpos + size); //top right
-
+	*/
 
 
 
@@ -132,6 +133,8 @@ void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zp
 	glVertex3f(xcenter - size, ycenter + size, zpos + size); //top left
 	glVertex3f(xcenter - size, ycenter - size, zpos + size); //bottom left
 	glEnd();
+
+	
 
 	glBegin(GL_POLYGON);//right face
 	glColor3f(1.0, 0.0, 1.0);
@@ -156,6 +159,42 @@ void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zp
 	glVertex3f(xcenter - size, ycenter - size, zpos + size); //bottom left
 	glVertex3f(xcenter + size, ycenter - size, zpos + size); //bottom right
 	glEnd();
+
+
+
+	//begin infinity Lines
+	if (infinityLines) {
+		glColor3f(0.0, 1.0, 0.1);
+		glBegin(GL_POLYGON);
+		glVertex3f(xcenter + size, ycenter + size, zpos - size); //top right
+		glVertex3f(xcenter + size, ycenter + size, zpos + size + 100); //top right
+		glVertex3f(xcenter + size + 0.01, ycenter + size, zpos + size + 100); //top right
+		glVertex3f(xcenter + size + 0.01, ycenter + size, zpos - size); //top right
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glVertex3f(xcenter - size, ycenter + size, zpos - size); //top right
+		glVertex3f(xcenter - size, ycenter + size, zpos + size + 100); //top right
+		glVertex3f(xcenter - size + 0.01, ycenter + size, zpos + size + 100); //top right
+		glVertex3f(xcenter - size + 0.01, ycenter + size, zpos - size); //top right
+		glEnd();
+
+
+
+		glBegin(GL_POLYGON);
+		glVertex3f(xcenter + size, ycenter - size, zpos - size); //top right
+		glVertex3f(xcenter + size, ycenter - size, zpos + size + 100); //top right
+		glVertex3f(xcenter + size, ycenter - size + 0.01, zpos + size + 100); //top right
+		glVertex3f(xcenter + size, ycenter - size + 0.01, zpos - size); //top right
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glVertex3f(xcenter - size, ycenter - size, zpos - size); //top right
+		glVertex3f(xcenter - size, ycenter - size, zpos + size + 100); //top right
+		glVertex3f(xcenter - size, ycenter - size + 0.01, zpos + size + 100); //top right
+		glVertex3f(xcenter - size, ycenter - size + 0.01, zpos - size); //top right
+		glEnd();
+	}
 
 	glFlush();
 }
@@ -183,13 +222,36 @@ void display() {
 	drawCubeLocation(-0.6f, 0.6f, 0.1f, -0.2f);
 
 	if (horizon) {
+		glColor3f(1.0, 0.0, 0.0);
 		glBegin(GL_POLYGON);
-		glVertex3f(-1.0, 0.0, 1.0);
-		glVertex3f(-1.0, 0.05, 1.0);
-		glVertex3f(1.0, 0.05, 1.0);
-		glVertex3f(1.0, 0.0, 1.0);
-
+		glVertex3f(-100, 0.0, 100);
+		glVertex3f(-100, 0.1, 100);
+		glVertex3f(100, 0.1, 100);
+		glVertex3f(100, 0.0, 100);
 		glEnd();
+
+
+		glBegin(GL_POLYGON);
+		glVertex3f(-100, 0.0, -100);
+		glVertex3f(-100, 0.1, -100);
+		glVertex3f(100, 0.1, -100);
+		glVertex3f(100, 0.0, -100);
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glVertex3f(-100, 0.0, 100);
+		glVertex3f(-100, 0.1, 100);
+		glVertex3f(-100, 0.1, -100);
+		glVertex3f(-100, 0.0, -100);
+		glEnd();
+
+		glBegin(GL_POLYGON);
+		glVertex3f(100, 0.0, 100);
+		glVertex3f(100, 0.1, 100);
+		glVertex3f(100, 0.1, -100);
+		glVertex3f(100, 0.0, -100);
+		glEnd();
+
 	}
 
 	glutSwapBuffers();
@@ -412,12 +474,13 @@ int main(int argc, char** argv)
 	glutMotionFunc(mouseMotion);
 	glutKeyboardFunc(keyboard);
 
-	gluPerspective(fov, asp, dim / 4, dim * 4); // aperture, aspect, near, far
+	gluPerspective(fov, asp, dim / 4, dim * 400); // aperture, aspect, near, far
 	createMenu();
 
-	GLUI* glui = GLUI_Master.create_glui("GLUI",0,400,400);
+	GLUI* glui = GLUI_Master.create_glui("GLUI",0,900,00);
 
-	glui->add_checkbox("Horizoin", &horizon);
+	glui->add_checkbox("Horizon", &horizon);
+	glui->add_checkbox("Extended Edges", &infinityLines);
 
 
 	//GLUI_Spinner* segment_spinner =  //Can be used for T in Program 5
