@@ -15,34 +15,30 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Library Include="..\..\..\Desktop\proj2\freeglut.lib">
+    <Library Include="freeglut.lib">
       <Filter>Resource Files</Filter>
     </Library>
-    <Library Include="..\..\..\Desktop\proj2\freeglutd.lib">
+    <Library Include="freeglutd.lib">
       <Filter>Resource Files</Filter>
     </Library>
-    <Library Include="..\..\..\Desktop\freshglui\glui_etc\glui_staticd.lib">
+    <Library Include="freeglut.lib">
       <Filter>Source Files</Filter>
     </Library>
-    <Library Include="..\..\..\Desktop\freshglui\glui_etc\freeglutd.lib">
+    <Library Include="freeglutd.lib">
       <Filter>Source Files</Filter>
     </Library>
-    <Library Include="..\..\..\Desktop\freshglui\glui_etc\glui_static.lib">
+    <Library Include="glui_static.lib">
       <Filter>Source Files</Filter>
     </Library>
-    <Library Include="..\..\..\Desktop\freshglui\glui_etc\GL\freeglut.lib">
+    <Library Include="glui_staticd.lib">
       <Filter>Source Files</Filter>
     </Library>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\Desktop\proj2\NoShader.sln" />
-    <None Include="..\..\..\Desktop\proj2\NoShader.vcxproj" />
-    <None Include="..\..\..\Desktop\proj2\NoShader.vcxproj.filters" />
-    <None Include="..\..\..\Desktop\proj2\NoShader.vcxproj.user" />
-    <None Include="..\..\..\Desktop\proj2\freeglutd.dll">
+    <None Include="freeglutd.dll">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="..\..\..\Desktop\freshglui\glui_etc\freeglutd.dll">
+    <None Include="freeglutd.dll">
       <Filter>Source Files</Filter>
     </None>
   </ItemGroup>
@@ -70,8 +66,5 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="..\..\..\Desktop\proj2\ReadMe.txt" />
   </ItemGroup>
 </Project>

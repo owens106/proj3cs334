@@ -212,14 +212,15 @@ void display() {
 	double Ex = 1.0 * dim * Sin(th) * Cos(ph);
 	double Ey = 1.0 * dim * Sin(ph);
 	double Ez = -1.0 * dim * Cos(th) * Cos(ph);
-	gluLookAt(Ex, Ey, Ez, xpos, ypos, zpos, 0, Cos(ph), 0);
+	//gluLookAt(Ex, Ey, Ez, xpos, ypos, zpos, 0, Cos(ph), 0);
+	gluLookAt(Ex, Ey, Ez, 0, 0, zpos, 0, Cos(ph), 0);
 
 
-	drawCubeLocation(-0.0f, -0.0f, 0.1f, -0.0f);
-	drawCubeLocation(-0.6f, -0.6f, 0.1f, -0.4f);
-	drawCubeLocation(0.6f, 0.6f, 0.1f, 0.4f);
-	drawCubeLocation(0.6f, -0.6f, 0.1f, 0.2f);
-	drawCubeLocation(-0.6f, 0.6f, 0.1f, -0.2f);
+	drawCubeLocation(-0.0f + xpos, -0.0f +ypos, 0.1f, -0.0f);
+	drawCubeLocation(-0.6f + xpos, -0.6f + ypos, 0.1f, -0.4f);
+	drawCubeLocation(0.6f + xpos, 0.6f + ypos, 0.1f, 0.4f);
+	drawCubeLocation(0.6f + xpos, -0.6f + ypos, 0.1f, 0.2f);
+	drawCubeLocation(-0.6f + xpos, 0.6f + ypos, 0.1f, -0.2f);
 
 	if (horizon) {
 		glColor3f(1.0, 0.0, 0.0);
@@ -397,16 +398,16 @@ void buttonPush(int val) {
 	switch (val)
 	{
 	case (1):
-		xpos += 0.1;
-		break;
-	case (2):
 		xpos -= 0.1;
 		break;
+	case (2):
+		xpos += 0.1;
+		break;
 	case(3):
-		ypos -= 0.1;
+		ypos += 0.1;
 		break;
 	case(4):
-		ypos += 0.1;
+		ypos -= 0.1;
 		break;
 	case(5):
 		//reset
