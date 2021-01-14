@@ -5,7 +5,9 @@
 #include "glui.h"
 #include <iostream>
 #include <gl/GL.h>
+#include <vector>
 
+using std::vector;
 
 GLfloat rotate_x=0;
 GLfloat rotate_y=0;
@@ -15,8 +17,7 @@ int fov = 30;
 double th = 0.0;
 double ph = 0.0;
 
-double xpos = 0.0;
-double ypos = 0.0;
+
 double zpos = 0.0;
 
 #define PI 3.1415926535897932384626433832795
@@ -39,13 +40,63 @@ int listboxID=30;
 float spinnerFloat=1.0;
 int infinityLines = 1;
 
+float anglex = 0.0;
+float angley = 0.0;
+BOOLEAN someSelection = false; //represents if any point is currently picked
+int selectedIndex = -1;
+
 //GLUI VARS
 GLUI_Spinner* segment_spinner;
 GLUI_Listbox* listbox;
 
 
+
+class Point {
+public:
+	float xcenter = 0.0;
+	float ycenter = 0.0;
+	float zcenter = 0.0;
+	BOOLEAN selected = false;
+	float anglex = 0.0;
+	float angley = 0.0;
+
+};
+
+vector<Point> Points;
+Point p0, p1, p2, p3, p4;
+
+
 void init() {
 	// Set initial OpenGL states
+}
+void reset() {
+	Points.clear();
+	//init cube points
+	p0.xcenter = 0.0;
+	p0.ycenter = 0.0;
+	p0.zcenter = 0.0;
+
+	p1.xcenter = -0.6;
+	p1.ycenter = -0.6;
+	p1.zcenter = -0.4;
+
+	p2.xcenter = 0.6;
+	p2.ycenter = 0.6;
+	p2.zcenter = 0.4;
+
+	p3.xcenter = 0.6;
+	p3.ycenter = -0.6;
+	p3.zcenter = 0.2;
+
+	p4.xcenter = -0.6;
+	p4.ycenter = 0.6;
+	p4.zcenter = -0.2;
+
+	Points.push_back(p0);
+	Points.push_back(p1);
+	Points.push_back(p2);
+	Points.push_back(p3);
+	Points.push_back(p4);
 }
 void project() {
 	glMatrixMode(GL_PROJECTION);
@@ -59,6 +110,7 @@ void project() {
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
+	
 
 }
 void resize(int width, int height) {
@@ -75,59 +127,38 @@ void resize(int width, int height) {
 	glutPostRedisplay();
 }
 
+
 void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zpos) { 
 
 	glBegin(GL_POLYGON); //front face
 
-	glColor3f(1.0, 0.0, 0.0);
+	//glColor3f(1.0, 0.0, 0.0);
 	glVertex3f(xcenter - size, ycenter + size, zpos - size); //top left
 
-	glColor3f(0.0, 1.0, 0.0);
+	//glColor3f(0.0, 1.0, 0.0);
 	glVertex3f(xcenter - size, ycenter - size, zpos - size); //bottom left
 	
-	glColor3f(0.0, 0.0, 1.0);
+	//glColor3f(0.0, 0.0, 1.0);
 	glVertex3f(xcenter + size, ycenter - size, zpos - size); //bottom right
 
-	glColor3f(1.0, 0.0, 1.0);
+	//glColor3f(1.0, 0.0, 1.0);
 	glVertex3f(xcenter + size, ycenter + size, zpos - size); //top right
 
 	glEnd();
 
 	glBegin(GL_POLYGON);//back face
-	glColor3f(1.0, 1.0, 1.0);
+	//glColor3f(1.0, 1.0, 1.0);
 	glVertex3f(xcenter + size, ycenter + size, zpos + size); //top right
 	glVertex3f(xcenter + size, ycenter - size, zpos + size); //bottom right
 	glVertex3f(xcenter - size, ycenter - size, zpos + size); //bottom left
 	glVertex3f(xcenter - size, ycenter + size, zpos + size); //top left
 	glEnd();
-
-	/*glBegin(GL_TRIANGLES);
-	glColor3f(1.0, 1.0, 0.0);
-
-	glVertex3f(0, 0, 0);
-	glVertex3f(xcenter - size, ycenter + size, zpos + size); //top left
-	glVertex3f(xcenter - size+0.02, ycenter + size, zpos + size); //top left
-
-	glVertex3f(0, 0, 0);
-	glVertex3f(xcenter - size, ycenter - size, zpos + size); //bottom left
-	glVertex3f(xcenter - size+.02, ycenter - size, zpos + size); //bottom left
-
-	glVertex3f(0, 0, 0);
-	glVertex3f(xcenter + size, ycenter - size, zpos + size); //bottom right
-	glVertex3f(xcenter + size+.02, ycenter - size, zpos + size); //bottom right
-
-	glVertex3f(0, 0, 0);
-	glVertex3f(xcenter + size, ycenter + size, zpos + size); //top right
-	glVertex3f(xcenter + size+0.02, ycenter + size, zpos + size); //top right
-	*/
-
-
 
 	glEnd();
 
 
 	glBegin(GL_POLYGON); //left face
-	glColor3f(0.0, 1.0, 0.0);
+	//glColor3f(0.0, 1.0, 0.0);
 	glVertex3f(xcenter - size, ycenter - size, zpos - size); //bottom left
 	glVertex3f(xcenter - size, ycenter + size, zpos - size); //top left
 	glVertex3f(xcenter - size, ycenter + size, zpos + size); //top left
@@ -137,7 +168,7 @@ void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zp
 	
 
 	glBegin(GL_POLYGON);//right face
-	glColor3f(1.0, 0.0, 1.0);
+	//glColor3f(1.0, 0.0, 1.0);
 	glVertex3f(xcenter + size, ycenter + size, zpos - size); //top right
 	glVertex3f(xcenter + size, ycenter - size, zpos - size); //bottom right
 	glVertex3f(xcenter + size, ycenter - size, zpos + size); //bottom right
@@ -145,7 +176,7 @@ void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zp
 	glEnd();
 
 	glBegin(GL_POLYGON);//top face
-	glColor3f(0.0, 0.0, 1.0);
+	//glColor3f(0.0, 0.0, 1.0);
 	glVertex3f(xcenter + size, ycenter + size, zpos - size); //top right
 	glVertex3f(xcenter + size, ycenter + size, zpos + size); //top right
 	glVertex3f(xcenter - size, ycenter + size, zpos + size); //top left
@@ -153,7 +184,7 @@ void drawCubeLocation(GLfloat xcenter, GLfloat ycenter, GLfloat size, GLfloat zp
 	glEnd();
 
 	glBegin(GL_POLYGON);//bottom face
-	glColor3f(1.0, 0.0, 0.0);
+	//glColor3f(1.0, 0.0, 0.0);
 	glVertex3f(xcenter + size, ycenter - size, zpos - size); //bottom right
 	glVertex3f(xcenter - size, ycenter - size, zpos - size); //bottom left
 	glVertex3f(xcenter - size, ycenter - size, zpos + size); //bottom left
@@ -212,15 +243,31 @@ void display() {
 	double Ex = 1.0 * dim * Sin(th) * Cos(ph);
 	double Ey = 1.0 * dim * Sin(ph);
 	double Ez = -1.0 * dim * Cos(th) * Cos(ph);
-	//gluLookAt(Ex, Ey, Ez, xpos, ypos, zpos, 0, Cos(ph), 0);
+
 	gluLookAt(Ex, Ey, Ez, 0, 0, zpos, 0, Cos(ph), 0);
 
 
-	drawCubeLocation(-0.0f + xpos, -0.0f +ypos, 0.1f, -0.0f);
-	drawCubeLocation(-0.6f + xpos, -0.6f + ypos, 0.1f, -0.4f);
-	drawCubeLocation(0.6f + xpos, 0.6f + ypos, 0.1f, 0.4f);
-	drawCubeLocation(0.6f + xpos, -0.6f + ypos, 0.1f, 0.2f);
-	drawCubeLocation(-0.6f + xpos, 0.6f + ypos, 0.1f, -0.2f);
+
+	for (int inc = 0; inc < Points.size(); inc++) {
+		float x = Points.at(inc).xcenter;
+		float y = Points.at(inc).ycenter;
+		float z = Points.at(inc).zcenter;
+
+		if (Points.at(inc).selected) {
+			glColor3f(1.0, 0.0, 0.0);
+		}
+		else {
+			glColor3f(0.0, 0.0, 1.0);
+		}
+		glPushMatrix();
+		glRotatef(anglex, 1.0, 0.0, 0.0);
+		glRotatef(angley, 0.0, 1.0, 0.0);
+
+		drawCubeLocation(x, y, 0.1, z);
+		glPopMatrix();
+	}
+
+
 
 	if (horizon) {
 		glColor3f(1.0, 0.0, 0.0);
@@ -278,6 +325,13 @@ void keyboard(unsigned char k, int x, int y)
 		ph += 0.5;
 		
 	}
+	else if (k == 116) {
+		anglex += 0.5;
+	}
+	else if (k == 121) {
+		angley += 0.5;
+	}
+	printf("%u\n", k);
 	glutPostRedisplay();
 	project();
 }
@@ -291,6 +345,7 @@ void mouseClick(int button, int mode, int x, int y) {
 	// button identifies what you clicked, mode if its down or up
 	double windowHeight = glutGet(GLUT_SCREEN_HEIGHT);
 	double windowWidth = glutGet(GLUT_SCREEN_WIDTH);
+
 
 	if (button == 0 && mode == 0) {//Lclick pushed down
 		Lclick = true;
@@ -311,21 +366,43 @@ void mouseClick(int button, int mode, int x, int y) {
 
 	int z = glutGetModifiers();
 	if (z == 1 && Lclick && mode == 1) {//shift Lclick released
-		//translation
+		//selection
 		Lclick = false;
-		
-		xpos += xchange;
-		ypos += ychange;
-		project();
-	}
-	else if (z == 2 && Lclick && mode == 1) {
-		zoomfactor -=0.1;
-		if (zoomfactor < 0.0) {
-			zoomfactor = 1;
+		float localx = 2.0f * ((GLfloat)x) / (GLfloat)(glutGet(GLUT_WINDOW_WIDTH)) - 1.0f; //convert to same scale as points
+		float localy = -1 * (2.0f * ((GLfloat)y) / (GLfloat)(glutGet(GLUT_WINDOW_HEIGHT)) - 1.0f);
+		//localx = localx * -1.0
+
+
+		printf("%f  %f\n", localx, localy);
+		int index = 0;
+		for (int i = 0; i < Points.size(); i++) {
+			if ((abs(Points.at(i).xcenter - localx)) < 0.1 && (abs(Points.at(i).ycenter - localy) < 0.1) ){
+				if (Points.at(i).selected == true) {
+					//if current selected point is already selected, toggle off
+					//therefore no selected point remains
+					someSelection = false;
+					
+				}
+				else {
+					someSelection = true;
+				}
+				Points.at(i).selected = !Points.at(i).selected;
+				index = i;
+				selectedIndex = i;
+				break;
+			}
 		}
-		Lclick = false;
+		for (int j = 0; j < Points.size(); j++) {
+			if (j == index) {
+				continue;
+			}
+			Points.at(j).selected = false;//toggle all other selections
+		}
+
+
 		project();
 	}
+	
 	else if (z == 0 && Lclick && mode == 1) {
 		//Left click released, no special input
 		Lclick = false;
@@ -359,90 +436,69 @@ void mouseMotion(int x, int y) {
 The main function.
 */
 
-void handleMenu(int choice) {
 
-	switch (choice) {
-	case 5:
-		fov = 30;
-		break;
-	case 6:
-		fov = 45;
-		break;
-	case 7:
-		fov = 60;
-		break;
-	case 8:
-		fov = 75;
-		break;
-	case 1:
-		exit(0);
-		break;
-	case 2:
-		zoomfactor = 1.0;
-		ph = 0;
-		th = 0;
-		fov = 55;
-		xpos = 0;
-		ypos = 0;
-		break;
-	case 3:
-		horizon = !horizon;
-		break;
-	}
-
-	project();
-	glutPostRedisplay();
-}
 
 void buttonPush(int val) {
-	switch (val)
-	{
-	case (1):
-		xpos -= 0.1;
-		break;
-	case (2):
-		xpos += 0.1;
-		break;
-	case(3):
-		ypos += 0.1;
-		break;
-	case(4):
-		ypos -= 0.1;
-		break;
-	case(5):
+	printf("someSelection Value: %d\n", someSelection);
+	if (someSelection) {
+		//aka local mode
+		switch (val)
+		{
+		case (1):
+			Points.at(selectedIndex).xcenter-= 0.1;
+			break;
+		case (2):
+			Points.at(selectedIndex).xcenter += 0.1;
+			break;
+		case(3):
+			Points.at(selectedIndex).ycenter += 0.1;
+			break;
+		case(4):
+			Points.at(selectedIndex).ycenter -= 0.1;
+			break;
+		}
+	}
+	else {
+		//non local
+		switch (val)
+		{
+		case (1):
+			for (int i = 0; i < Points.size(); i++) {
+				Points.at(i).xcenter -= 0.1;
+			}
+			break;
+		case (2):
+			for (int i = 0; i < Points.size(); i++) {
+				Points.at(i).xcenter += 0.1;
+			}
+			break;
+		case(3):
+			for (int i = 0; i < Points.size(); i++) {
+				Points.at(i).ycenter += 0.1;
+			}
+			break;
+		case(4):
+			for (int i = 0; i < Points.size(); i++) {
+				Points.at(i).ycenter -= 0.1;
+			}
+			break;
+		}
+	}
+	
+	if (val == 5) {
 		//reset
 		zoomfactor = 1.0;
 		ph = 0;
 		th = 0;
 		fov = 30;
-		xpos = 0;
-		ypos = 0;
 		segment_spinner->set_float_val(1.0);
 		listbox->set_int_val(30);
-		break;
+		reset();
+	}
 		
 	
-	}
-	project();
-}
-
-
-void createMenu() {
-	submenu_id = glutCreateMenu(handleMenu);
-	glutAddMenuEntry("30", 5);
-	glutAddMenuEntry("45", 6);
-	glutAddMenuEntry("60", 7);
-	glutAddMenuEntry("75", 8);     
 	
-	menu = glutCreateMenu(handleMenu);
-	glutAddMenuEntry("Exit", 1);
-	glutAddMenuEntry("reset", 2);
-	glutAddMenuEntry("show Horizon", 3);
-	glutAddMenuEntry("Show Perspectve", 4);
-
-	glutAddSubMenu("set Aperture", submenu_id);
-	glutAttachMenu(GLUT_RIGHT_BUTTON);
-
+	project();
 }
 
 
@@ -457,8 +513,14 @@ void myGlutIdle(void)
 	glutPostRedisplay();
 }
 
+
+
 int main(int argc, char** argv)
 {
+	reset();
+	
+
+
 	// Initialize the GLUT window
 	glutInit(&argc, argv);
 	glViewport(0, 0, 600, 600);
@@ -476,7 +538,6 @@ int main(int argc, char** argv)
 	glutKeyboardFunc(keyboard);
 
 	gluPerspective(fov, asp, dim / 4, dim * 400); // aperture, aspect, near, far
-	createMenu();
 
 	GLUI* glui = GLUI_Master.create_glui("GLUI",0,900,00);
 
