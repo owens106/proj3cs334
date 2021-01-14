@@ -251,6 +251,7 @@ void display() {
 		float x = Points.at(inc).xcenter;
 		float y = Points.at(inc).ycenter;
 		float z = Points.at(inc).zcenter;
+		float size = Points.at(inc).size;
 
 		if (Points.at(inc).selected) {
 			glColor3f(1.0, 0.0, 0.0);
@@ -262,7 +263,7 @@ void display() {
 		glRotatef(Points.at(inc).anglex, 1.0, 0.0, 0.0);
 		glRotatef(Points.at(inc).angley, 0.0, 1.0, 0.0);
 
-		drawCubeLocation(x, y, 0.1, z);
+		drawCubeLocation(x, y, size, z);
 		glPopMatrix();
 	}
 
@@ -535,6 +536,22 @@ void cubeSelector(int val) {
 	project();
 }
 
+void cubeScaler(int val) {
+	if (someSelection == false) {
+		return;
+	}
+	if (val == 1) {
+		Points.at(selectedIndex).size += 0.01;
+	}
+	else if (val == 2) {
+		Points.at(selectedIndex).size -= 0.01;
+		if (Points.at(selectedIndex).size <= 0.0) {
+			Points.at(selectedIndex).size = 0.01;
+		}
+	}
+	project();
+}
+
 
 void myGlutIdle(void)
 {
@@ -617,6 +634,11 @@ int main(int argc, char** argv)
 	glui->add_button("Select Next", 1, cubeSelector);
 	glui->add_button("Select Prev", 2, cubeSelector);
 	glui->add_button("Select None", 3, cubeSelector);
+
+	glui->add_separator();
+	glui->add_button("scale selected Up", 1, cubeScaler);
+	glui->add_button("scale selected Down", 2, cubeScaler);
+
 
 
 	
