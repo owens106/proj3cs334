@@ -40,8 +40,6 @@ int listboxID=30;
 float spinnerFloat=1.0;
 int infinityLines = 1;
 
-float anglex = 0.0;
-float angley = 0.0;
 BOOLEAN someSelection = false; //represents if any point is currently picked
 int selectedIndex = -1;
 
@@ -59,6 +57,7 @@ public:
 	BOOLEAN selected = false;
 	float anglex = 0.0;
 	float angley = 0.0;
+	float size = 0.1;
 
 };
 
@@ -93,10 +92,10 @@ void reset() {
 	p4.zcenter = -0.2;
 
 	Points.push_back(p0);
-	Points.push_back(p1);
 	Points.push_back(p2);
-	Points.push_back(p3);
 	Points.push_back(p4);
+	Points.push_back(p1);
+	Points.push_back(p3);
 }
 void project() {
 	glMatrixMode(GL_PROJECTION);
@@ -260,8 +259,8 @@ void display() {
 			glColor3f(0.0, 0.0, 1.0);
 		}
 		glPushMatrix();
-		glRotatef(anglex, 1.0, 0.0, 0.0);
-		glRotatef(angley, 0.0, 1.0, 0.0);
+		glRotatef(Points.at(inc).anglex, 1.0, 0.0, 0.0);
+		glRotatef(Points.at(inc).angley, 0.0, 1.0, 0.0);
 
 		drawCubeLocation(x, y, 0.1, z);
 		glPopMatrix();
@@ -325,12 +324,7 @@ void keyboard(unsigned char k, int x, int y)
 		ph += 0.5;
 		
 	}
-	else if (k == 116) {
-		anglex += 0.5;
-	}
-	else if (k == 121) {
-		angley += 0.5;
-	}
+
 	printf("%u\n", k);
 	glutPostRedisplay();
 	project();
@@ -421,14 +415,21 @@ void mouseMotion(int x, int y) {
 	GLfloat ydiff = (lmDrag[1] - (GLfloat)y)/windowHeight;
 
 	int z = glutGetModifiers();
-	if (Lclick && z == 0) {
+	if (Lclick && z == 0 && someSelection == false) {
 		lmDrag[0] = x;
 		lmDrag[1] = y;
 		th += xdiff*150;
 		ph += ydiff*150;
 
 	}
-	project();
+	else if((Lclick && z == 0) && (someSelection)) {
+		printf("inside rotaion for selection\n");
+		Points.at(selectedIndex).anglex -= ydiff;
+		Points.at(selectedIndex).angley += xdiff;
+
+	}
+
+	glutPostRedisplay();
 
 }
 
@@ -493,11 +494,44 @@ void buttonPush(int val) {
 		fov = 30;
 		segment_spinner->set_float_val(1.0);
 		listbox->set_int_val(30);
+		someSelection = false;
 		reset();
 	}
 		
 	
 	
+	project();
+}
+
+void cubeSelector(int val) {
+	if (val == 1) {
+		selectedIndex += 1;
+		if (selectedIndex == 5) {
+			selectedIndex = 0;
+		}
+		someSelection = true;
+	}
+	else if (val == 2) {
+		//prev
+		selectedIndex -= 1;
+		if (selectedIndex == -1) {
+			selectedIndex = 4;
+		}
+		someSelection = true;
+	}
+
+	else if (val == 3) {
+		//select none
+		someSelection = false;
+	}
+
+	for (int i = 0; i < Points.size(); i++) {
+		Points.at(i).selected = false;
+	}
+	if (someSelection) {
+		Points.at(selectedIndex).selected = true;
+	}
+
 	project();
 }
 
@@ -554,7 +588,7 @@ int main(int argc, char** argv)
 
 	segment_spinner =  //Can be used for T in Program 5
 		glui->add_spinner("Zoom Level:", GLUI_SPINNER_FLOAT, &spinnerFloat);
-	segment_spinner->set_int_limits(0.0,1.5);
+	segment_spinner->set_float_limits(0.0,1.5);
 
 	listbox = glui->add_listbox("Aperture Value",&listboxID);
 	listbox->add_item(30, "30");
@@ -574,8 +608,18 @@ int main(int argc, char** argv)
 
 	glui->add_separator();
 
+
 	glui->add_button("Reset", 5, buttonPush);
 	glui->add_button("Quit", 0, (GLUI_Update_CB)exit);
+
+	glui->add_column();
+	glui->add_panel("Cube selector");
+	glui->add_button("Select Next", 1, cubeSelector);
+	glui->add_button("Select Prev", 2, cubeSelector);
+	glui->add_button("Select None", 3, cubeSelector);
+
+
+	
 
 
 	//GLUI_RadioGroup* group1 = glui->add_radiogroup_to_panel(obj_panel);
